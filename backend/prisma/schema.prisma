@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  id         Int       @id @default(autoincrement())
+  username   String?   @db.VarChar(255)
+  password   String?   @db.VarChar(255)
+  created_at DateTime  @default(now()) @db.Timestamp(0)
+  updated_at DateTime  @default(now()) @db.Timestamp(0)
+  deleted_at DateTime? @db.Timestamp(0)
+}
+
+model tableban {
+  id             Int            @id @default(autoincrement())
+  driverId       Int
+  carNumber      Int
+  dateChange     DateTime       @db.Date
+  merkBan        String?        @db.VarChar(255)
+  kmNew          Float          @db.Float
+  kmOld          Float          @db.Float
+  created_at     DateTime       @default(now()) @db.Timestamp(0)
+  updated_at     DateTime       @default(now()) @db.Timestamp(0)
+  deleted_at     DateTime?      @db.Timestamp(0)
+  tabledriver    tabledriver    @relation(fields: [driverId], references: [id], onUpdate: Restrict, map: "tableban_ibfk_1")
+  tablekendaraan tablekendaraan @relation(fields: [carNumber], references: [id], onUpdate: Restrict, map: "tableban_ibfk_2")
+
+  @@index([carNumber], map: "carNumber")
+  @@index([driverId], map: "driverId")
+}
+
+model tabledriver {
+  id                Int            @id @default(autoincrement())
+  fullName          String         @db.VarChar(255)
+  ktp               String?        @db.VarChar(255)
+  phoneNumber       String?        @db.VarChar(255)
+  bankAccountName   String?        @db.VarChar(40)
+  bankAccountNumber String?        @db.VarChar(255)
+  created_at        DateTime       @default(now()) @db.Timestamp(0)
+  updated_at        DateTime       @default(now()) @db.Timestamp(0)
+  deleted_at        DateTime?      @db.Timestamp(0)
+  tableban          tableban[]
+  tablekinerja      tablekinerja[]
+  tableper          tableper[]
+  tablesolar        tablesolar[]
+}
+
+model tablekendaraan {
+  id           Int            @id @default(autoincrement())
+  carType      String?        @db.VarChar(255)
+  noPlat       String         @db.VarChar(255)
+  created_at   DateTime       @default(now()) @db.Timestamp(0)
+  updated_at   DateTime       @default(now()) @db.Timestamp(0)
+  deleted_at   DateTime?      @db.Timestamp(0)
+  tableban     tableban[]
+  tablekinerja tablekinerja[]
+  tableper     tableper[]
+  tablesolar   tablesolar[]
+}
+
+model tablekinerja {
+  id             Int            @id @default(autoincrement())
+  driverId       Int
+  dateLoad       DateTime       @db.Date
+  noDo           Int?
+  carNumber      Int
+  totalTon       Int
+  uangJalan      Int?
+  productOrigin  String?        @db.VarChar(255)
+  productCode    String?        @db.VarChar(255)
+  transMitra     String?        @db.VarChar(255)
+  created_at     DateTime       @default(now()) @db.Timestamp(0)
+  updated_at     DateTime       @default(now()) @db.Timestamp(0)
+  deleted_at     DateTime?      @db.Timestamp(0)
+  tabledriver    tabledriver    @relation(fields: [driverId], references: [id], onUpdate: Restrict, map: "tablekinerja_ibfk_1")
+  tablekendaraan tablekendaraan @relation(fields: [carNumber], references: [id], onUpdate: Restrict, map: "tablekinerja_ibfk_2")
+
+  @@index([carNumber], map: "carNumber")
+  @@index([driverId], map: "driverId")
+}
+
+model tableper {
+  id             Int            @id @default(autoincrement())
+  driverId       Int
+  carNumber      Int
+  dateChange     DateTime       @db.Date
+  kodePer        String?        @db.VarChar(255)
+  jenisPer       String?        @db.VarChar(255)
+  bagian         String?        @db.VarChar(255)
+  kmNew          Float          @db.Float
+  kmOld          Float          @db.Float
+  created_at     DateTime       @default(now()) @db.Timestamp(0)
+  updated_at     DateTime       @default(now()) @db.Timestamp(0)
+  deleted_at     DateTime?      @db.Timestamp(0)
+  tabledriver    tabledriver    @relation(fields: [driverId], references: [id], onUpdate: Restrict, map: "tableper_ibfk_1")
+  tablekendaraan tablekendaraan @relation(fields: [carNumber], references: [id], onUpdate: Restrict, map: "tableper_ibfk_2")
+
+  @@index([carNumber], map: "carNumber")
+  @@index([driverId], map: "driverId")
+}
+
+model tablesolar {
+  id             Int            @id @default(autoincrement())
+  driverId       Int
+  carNumber      Int
+  rit            String?        @db.VarChar(255)
+  startDate      DateTime       @db.Date
+  endDate        DateTime       @db.Date
+  solarRest      String         @db.VarChar(255)
+  price          String?        @db.VarChar(255)
+  created_at     DateTime       @default(now()) @db.Timestamp(0)
+  updated_at     DateTime       @default(now()) @db.Timestamp(0)
+  deleted_at     DateTime?      @db.Timestamp(0)
+  tabledriver    tabledriver    @relation(fields: [driverId], references: [id], onUpdate: Restrict, map: "tablesolar_ibfk_1")
+  tablekendaraan tablekendaraan @relation(fields: [carNumber], references: [id], onUpdate: Restrict, map: "tablesolar_ibfk_2")
+
+  @@index([carNumber], map: "carNumber")
+  @@index([driverId], map: "driverId")
+}
