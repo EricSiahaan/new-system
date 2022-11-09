@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
-const prisma = new PrismaClient();
+const prisma = require("../prisma")
 // const abc = require('../controller/driverController');
 
 
@@ -7,6 +6,8 @@ exports.createSolar = async function (req, res, next) {
     try {
         // validasi -> req.body.startDate dengan req.body.endDate
         // cari range/interval : 1 - 7 -> 7
+
+
         const result = await prisma.tablesolar.create({
             data: req.body
         });
