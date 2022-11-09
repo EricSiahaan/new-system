@@ -68,3 +68,24 @@ exports.deleteAdminById = async function (req, res) {
     })
     res.json(admin)
 }
+
+exports.login = async function (req, res) {
+    try {
+        const admin = await prisma.admin.findFirst({
+            where: {
+                AND: [
+                    { username: req.body.username },
+                    { password: req.body.password },
+                    { deleted_at: null }
+                ]
+            },
+        })
+        res.status(200).json({
+            data: admin
+        })
+    } catch {
+        res.json({
+            message: "data Tidak ada"
+        })
+    }
+}
