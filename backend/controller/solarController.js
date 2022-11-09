@@ -1,9 +1,12 @@
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+// const abc = require('../controller/driverController');
 
 
 exports.createSolar = async function (req, res, next) {
     try {
+        // validasi -> req.body.startDate dengan req.body.endDate
+        // cari range/interval : 1 - 7 -> 7
         const result = await prisma.tablesolar.create({
             data: req.body
         });
@@ -47,6 +50,10 @@ exports.getSolarById = async function (req, res) {
 
         }
         )
+
+        // looping si solar
+
+        // abc.getDriverById()
         res.status(200).json({
             data: solar
         })
@@ -56,6 +63,12 @@ exports.getSolarById = async function (req, res) {
         })
     }
 }
+
+// getSolarByMonth-> including year
+
+// /:month/:year
+
+// solar/01/2022
 
 
 exports.updateSolarById = async function (req, res) {
