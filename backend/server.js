@@ -8,6 +8,7 @@ const perRoutes = require('./routes/per.js')
 const solarRoutes = require('./routes/solar.js')
 
 const cors = require('cors')
+const prisma = require('./prisma')
 const app = express()
 
 
