@@ -4,9 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare-backend": "cd backend && npm install",
-    "start": "nodemon backend/server.js"
+    "start": "nodemon backend/server.js",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
@@ -15,7 +17,7 @@
     "prisma": "^4.6.0"
   },
   "dependencies": {
-    "@prisma/client": "^4.5.0",
+    "@prisma/client": "^4.6.0",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "date-fns": "^2.29.3",
