@@ -112,7 +112,7 @@ exports.updatePassword = async function (req, res) {
             ]
         },
     })
-    
+
     if (admin == null) {
         return res.json({
             message: "Data admin tidak ditemukan"
@@ -131,7 +131,7 @@ exports.updatePassword = async function (req, res) {
     }
 
     var new_password = crypto.createHash('sha256').update(req.body.new_password).digest('base64');
-    
+
     admin = await prisma.admin.update({
         where: {
             id: id

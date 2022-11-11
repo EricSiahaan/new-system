@@ -1,5 +1,4 @@
-const { PrismaClient } = require('@prisma/client')
-const prisma = new PrismaClient()
+const prisma = require("../prisma")
 
 exports.createKinerja = async function (req, res, next) {
     try {
