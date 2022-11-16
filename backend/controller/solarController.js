@@ -1,12 +1,27 @@
 const prisma = require("../prisma")
-// const abc = require('../controller/driverController');
-
 
 exports.createSolar = async function (req, res, next) {
     try {
-        // validasi -> req.body.startDate dengan req.body.endDate
-        // cari range/interval : 1 - 7 -> 7
+        // convert start date & end date
+        var startDate = req.body.startDate;
+        var endDate = req.body.endDate;
+        
+        startDate = new Date(startDate);
+        endDate = new Date(endDate);
+        
+        // get unit time & get days
+        var Difference_In_Time = endDate.getTime() - startDate.getTime();
+        var difDays = Difference_In_Time / (1000 * 3600 * 24);
 
+        if (difDays != 7) {
+            res.json({
+                message: "Range antara Start date dan End date harus 7 hari"
+            })
+            return
+        }
+
+        req.body.startDate = startDate
+        req.body.endDate = endDate
 
         const result = await prisma.tablesolar.create({
             data: req.body
@@ -21,9 +36,7 @@ exports.createSolar = async function (req, res, next) {
 
 exports.getAllSolar = async function (req, res) {
     try {
-
         const solars = await prisma.tablesolar.findMany({
-
             where: {
                 deleted_at: null
             },
@@ -48,15 +61,32 @@ exports.getSolarById = async function (req, res) {
                     { deleted_at: null }
                 ]
             },
+        })
 
-        }
-        )
+        const driver = await prisma.tabledriver.findFirst({
+            where: {
+                AND: [
+                    { id: solar.driverId },
+                    { deleted_at: null }
+                ]
+            },
+        })
 
-        // looping si solar
+        const car = await prisma.tablekendaraan.findFirst({
+            where: {
+                AND:[
+                    { id: solar.carNumber },
+                    { deleted_at: null },
+                ]
+            }
+        })
 
-        // abc.getDriverById()
         res.status(200).json({
-            data: solar
+            data: {
+                "solar_detail": solar,
+                "driver_detail": driver,
+                "car_detail": car,
+            }
         })
     } catch {
         res.json({
@@ -64,13 +94,6 @@ exports.getSolarById = async function (req, res) {
         })
     }
 }
-
-// getSolarByMonth-> including year
-
-// /:month/:year
-
-// solar/01/2022
-
 
 exports.updateSolarById = async function (req, res) {
     const id = parseInt(req.params.id)
@@ -80,8 +103,6 @@ exports.updateSolarById = async function (req, res) {
         },
         data:
             req.body,
-        // birthDate: new Date(req.body.birthDate)
-
     })
     res.json(solar)
 }
