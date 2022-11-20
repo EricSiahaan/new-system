@@ -119,3 +119,75 @@ exports.deleteSolarById = async function (req, res) {
     })
     res.json(solar)
 }
+
+exports.getSolarByDate = async function (req, res) {
+    try {
+        const startDate = req.query.startDate
+        const endDate = req.query.endDate
+
+        let total_rit = 0;
+        let total_solar_rest = 0;
+        let total_price = 0;
+
+        const solar = await prisma.tablesolar.findMany({
+            where: {
+                AND: [
+                    { 
+                        startDate: {
+                            lte: endDate,
+                            gte: startDate,
+                        }, 
+                    },
+                    { 
+                        endDate: {
+                            lte: endDate,
+                            gte: startDate,
+                        },  
+                    },
+                    { deleted_at: null }
+                ]
+            },
+        })
+
+        const driver = await prisma.tabledriver.findFirst({
+            where: {
+                AND: [
+                    { id: solar.driverId },
+                    { deleted_at: null }
+                ]
+            },
+        })
+
+        const car = await prisma.tablekendaraan.findFirst({
+            where: {
+                AND:[
+                    { id: solar.carNumber },
+                    { deleted_at: null },
+                ]
+            }
+        })
+
+        for (var i = 0, l = solar.length; i < l; i++) {
+            total_rit += solar[i].rit;
+            total_solar_rest += solar[i].solarRest;
+            total_price += solar[i].price;
+
+        }
+
+        res.status(200).json({
+            data: {
+                "solar_detail": solar,
+                "driver_detail": driver,
+                "car_detail": car,
+                "total_rit": total_rit,
+                "total_solar_rest": total_solar_rest,
+                "total_price": total_price,
+            }
+        })
+        res.status(200).json(solars)
+    } catch {
+        res.json({
+            message: "data Tidak ada"
+        })
+    }
+}

@@ -11,6 +11,7 @@ router.get('/', getAllSolar)
 router.get('/:id', getSolarById)
 router.put('/update/:id', updateSolarById)
 router.delete('/:id', deleteSolarById)
+router.get('/get-by-date', getSolarByDate)
 
 
 

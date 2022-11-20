@@ -32,10 +32,32 @@ exports.getKinerjaById = async function (req, res) {
                     { deleted_at: null }
                 ]
             },
-        }
-        )
+        })
+
+        const driver = await prisma.tabledriver.findFirst({
+            where: {
+                AND: [
+                    { id: kinerja.driverId },
+                    { deleted_at: null }
+                ]
+            },
+        })
+
+        const car = await prisma.tablekendaraan.findFirst({
+            where: {
+                AND:[
+                    { id: kinerja.carNumber },
+                    { deleted_at: null },
+                ]
+            }
+        })
+
         res.status(200).json({
-            data: kinerja
+            data: {
+                "kinerja_detail": kinerja,
+                "driver_detail": driver,
+                "car_detail": car,
+            }
         })
     } catch {
         res.json({
